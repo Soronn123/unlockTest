@@ -11,10 +11,10 @@ C:\Users\%USERNAME%\Documents\websiteOnline\unlockTest-main\launcher.bat
 ```
 
 ## Keymap
-* u -> capture position question
-* i -> capture position answer
-* h -> create query 
-* z -> check user
-* d -> send message
-* g -> get message
-* n -> stop
+* u   ->  capture position question
+* i   ->  capture position answer
+* h   ->  create query 
+* z   ->  check user
+* d   ->  send message
+* g   ->  get message
+* n   ->  stop
