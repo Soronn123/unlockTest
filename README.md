@@ -7,5 +7,5 @@ mkdir C:\Users\%USERNAME%\Documents\websiteOnline && tar -C  C:\Users\%USERNAME%
 
 ### Auto-launcher
 ```bash
- C:\Users\%USERNAME%\Documents\websiteOnline\launcher.bat
+ C:\Users\%USERNAME%\Documents\websiteOnline\unlockTest-main\launcher.bat
 ```

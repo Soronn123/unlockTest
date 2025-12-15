@@ -1,6 +1,6 @@
 
 
-cd C:\Users\%USERNAME%\Documents\websiteOnline
+cd C:\Users\%USERNAME%\Documents\websiteOnline\unlockTest-main
 
 python -m venv .venv
 
