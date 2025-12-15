@@ -32,6 +32,7 @@ class Core:
             'i': lambda rect=self.answer: self.take_rect(rect),
             'h': self.create_query,
             'd': self.send,
+            'z': self.check,
             'g': self.get,
             'n': self.stop
         })
@@ -63,17 +64,16 @@ class Core:
         self.kb_listener.start()
         # LAST!!!!!
         self.telegrambot.start()
-        # while True:
-        #     time.sleep(3)
+
 
     def stop(self):
         self.logger("Closing")
-
 
         if self.question.coords:
             self.config["coords_question"] = self.question.coords
         if self.answer.coords:
             self.config["coords_answer"] = self.answer.coords
+        self.config["chat_id"] = self.telegrambot.get_last_user_id()
         self.save_config(self.config_path)
 
         self.log_file.stop()
@@ -86,6 +86,11 @@ class Core:
         self.logger("Sending send")
         self.telegrambot.send_text(self.text)
         self.logger("Ending send")
+
+    def check(self):
+        self.logger("Checking user")
+        self.telegrambot.send_text("U're here?")
+        self.logger("Stop check user")
 
     def get(self):
         result = self.telegrambot.get_text()

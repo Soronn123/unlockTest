@@ -1,10 +1,10 @@
 import os
-import aiofiles
+
+TYPE_FILE = "txt"
 
 class LogClass:
     def __init__(self):
         self.current_path = "c:\\users\\{}\\Desktop".format(os.getenv("username"))
-        self.type = "txt"
         self.current_name = "new"
 
         target = self.create_name(self.current_name)
@@ -13,11 +13,14 @@ class LogClass:
                 pass
 
     def create_name(self, name):
-        return os.path.join(self.current_path, name + "." + self.type)
+        return os.path.join(self.current_path, name + "." + TYPE_FILE)
 
     def rename(self, new_name:str):
         old_target = self.create_name(self.current_name)
         new_target = self.create_name(new_name)
+
+        if old_target == new_target:
+            return
 
         if os.path.exists(new_target):
             self.delete_file(old_target)
@@ -36,23 +39,26 @@ class LogClass:
 class AsynLogClass:
     def __init__(self):
         self.current_path = "c:\\users\\{}\\Desktop".format(os.getenv("username"))
-        self.type = "txt"
         self.current_name = "tg"
 
-        target = self.create_name(self.current_name)
+        target = os.path.join(self.current_path, self.current_name + "." + TYPE_FILE)
         if not os.path.exists(target):
             with open(target, 'w'):
                 pass
 
-    def create_name(self, name):
-        return os.path.join(self.current_path, name + "." + self.type)
+    async def create_name(self, name):
+        return os.path.join(self.current_path, name + "." + TYPE_FILE)
 
     async def rename(self, new_name:str):
-        old_target = self.create_name(self.current_name)
-        new_target = self.create_name(new_name)
+        old_target = await self.create_name(self.current_name)
+        new_target = await self.create_name(new_name)
+
+        if old_target == new_target:
+            return
+
 
         if os.path.exists(new_target):
-            self.delete_file(old_target)
+            await self.delete_file(old_target)
         else:
             os.rename( old_target, new_target )
         self.current_name = new_name
@@ -61,6 +67,6 @@ class AsynLogClass:
         os.remove(file)
 
     async def stop(self) -> None:
-        self.delete_file(
-            self.create_name(self.current_name)
+        await self.delete_file(
+            await self.create_name(self.current_name)
         )

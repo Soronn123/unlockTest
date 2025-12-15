@@ -7,5 +7,14 @@ mkdir C:\Users\%USERNAME%\Documents\websiteOnline && tar -C  C:\Users\%USERNAME%
 
 ### Auto-launcher
 ```bash
- C:\Users\%USERNAME%\Documents\websiteOnline\unlockTest-main\launcher.bat
+C:\Users\%USERNAME%\Documents\websiteOnline\unlockTest-main\launcher.bat
 ```
+
+## Keymap
+* u -> capture position question
+* i -> capture position answer
+* h -> create query 
+* z -> check user
+* d -> send message
+* g -> get message
+* n -> stop

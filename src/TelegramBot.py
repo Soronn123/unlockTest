@@ -10,8 +10,6 @@ class TelegramBot:
         self.app.add_handler(CommandHandler('connect_to_user', self.connect_user))
         self.app.add_handler(CommandHandler('reload_user', self.reload_user))
         self.app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), self.responce))
-        self.app.add_handler(CommandHandler('otvet', self.responce_command))
-        self.app.add_handler(CommandHandler('question', self.send_message))
 
         self.chat_id = chat_id
         self.responce_text: str = "Nothing"
@@ -30,21 +28,18 @@ class TelegramBot:
         if not self.chat_id:
             self.chat_id = update.effective_chat.id
             await context.bot.send_message(chat_id=self.chat_id, text="Connect to user? Successfully")
+            await self.log_file.rename("connect user")
 
     async def reload_user(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        self.chat_id = update.effective_chat.id
-        await context.bot.send_message(chat_id=update.effective_chat.id, text="Reload to user? Successfully")
+        if update.effective_chat.id == self.chat_id:
+            self.chat_id = None
+            await context.bot.send_message(chat_id=update.effective_chat.id, text="Reload to user? Successfully")
+            await self.log_file.rename("disconnect user")
 
     async def responce(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         if update.effective_chat.id == self.chat_id:
             self.responce_text = update.message.text
-            self.log_file.rename(update.message.text)
-
-    async def responce_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        self.responce(update, context)
-
-    async def responce_text(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        self.responce(update, context)
+            await self.log_file.rename(update.message.text)
 
     def send_text(self, message: str):
         if self.event_loop and self.event_loop.is_running():
@@ -57,12 +52,17 @@ class TelegramBot:
         return self.responce_text
 
     def stop(self):
-        self.log_file.stop()
+        asyncio.run(
+           self.log_file.stop()
+        )
         if self.event_loop and self.event_loop.is_running():
             asyncio.run_coroutine_threadsafe(
                 self.app.stop(),
                 self.event_loop
             )
+
+    def get_last_user_id(self):
+        return self.chat_id
 
     def start(self):
         self.app.run_polling()
