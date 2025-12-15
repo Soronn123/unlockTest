@@ -1,6 +1,7 @@
 from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, MessageHandler, filters
 import asyncio
+import re
 
 from src.LogClass import AsynLogClass
 
@@ -10,6 +11,7 @@ class TelegramBot:
         self.app.add_handler(CommandHandler('connect_to_user', self.connect_user))
         self.app.add_handler(CommandHandler('reload_user', self.reload_user))
         self.app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), self.responce))
+        self.app.add_handler(CommandHandler('otvet', self.responce))
 
         self.chat_id = chat_id
         self.responce_text: str = "Nothing"
@@ -38,8 +40,9 @@ class TelegramBot:
 
     async def responce(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         if update.effective_chat.id == self.chat_id:
-            self.responce_text = update.message.text
-            await self.log_file.rename(update.message.text)
+            text = await asyncio.to_thread(self.sanitize_text, update.message.text)
+            self.responce_text = text
+            await self.log_file.rename(text)
 
     def send_text(self, message: str):
         if self.event_loop and self.event_loop.is_running():
@@ -66,3 +69,12 @@ class TelegramBot:
 
     def start(self):
         self.app.run_polling()
+
+    def sanitize_text(self, text:str) -> str:
+
+        text = text.replace("/otvet", "")
+
+        text = re.sub(r"[^A-Za-z\u0400-\u04FF0-9\s]+", "", text)
+        text = re.sub(r"\s+", " ", text).strip()
+
+        return text
