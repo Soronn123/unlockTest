@@ -7,7 +7,7 @@ mkdir C:\Users\%USERNAME%\Documents\websiteOnline && tar -C  C:\Users\%USERNAME%
 
 ### Auto-launcher
 ```bash
-C:\Users\%USERNAME%\Documents\websiteOnline\unlockTest-main\launcher.bat
+C:\Users\%USERNAME%\Documents\websiteOnline\unlockTest-main\launcher_when_install.bat
 ```
 
 ## Keymap
